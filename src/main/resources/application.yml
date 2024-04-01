@@ -6,3 +6,7 @@ openApi:
   serviceKey: "GeQuD0M5/2S5ohjRSKO0kZrEcIIMPQfg94wpS1OsKg9zaUhR6etGfGSueO3/3IjcJ1e7S9kUSkK/KkqWNezlNw=="
   dataType: "json"
   callBackUrl: "http://apis.data.go.kr/1613000/TrainInfoService/getStrtpntAlocFndTrainInfo"
+
+crawling:
+  url: "https://www.letskorail.com/ebizprd/EbizPrdTicketpr21100W_pr21110.do"
+  driver-path: "C:\\Users\\gmltj\\chromedriver-win64\\chromedriver-win64\\chromedriver.exe"

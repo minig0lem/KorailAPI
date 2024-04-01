@@ -41,7 +41,7 @@ public class NeilroDto {
 
     @Builder
     public static class NeilroListResponse {
-        private int totalCount;
+        private Long totalCount;
         private List<NeilroResponse> neilroList;
     }
 
@@ -67,7 +67,7 @@ public class NeilroDto {
         private String dep;
         private Long depTime;
         private String arr;
-        private Long  arrTime;
+        private Long arrTime;
         private String trainType;
         private Long trainNum;
 
@@ -81,5 +81,9 @@ public class NeilroDto {
                     .trainNum(trainNum)
                     .build();
         }
+    }
+    @Builder
+    public static class CrawlingResponse {
+        private List<Integer> NeilroTrainNumList;
     }
 }

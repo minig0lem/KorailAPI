@@ -1,6 +1,7 @@
 package com.minig0lem.neilro.controller;
 
 import com.minig0lem.neilro.constants.StationCode;
+import com.minig0lem.neilro.service.CrawlingManager;
 import com.minig0lem.neilro.service.NeilroService;
 import com.minig0lem.neilro.service.OpenApiManager;
 import jakarta.validation.Valid;
@@ -23,10 +24,12 @@ public class NeilroController {
 
     private final NeilroService neilroService;
     private final OpenApiManager openApiManager;
+    private final CrawlingManager crawlingManager;
 
     @PostMapping("/neilro")
     public ResponseEntity<Void> findNeilro(@Valid @RequestBody NeilroRequest neilroRequest) {
-        openApiManager.fetch(neilroRequest);
+        //openApiManager.fetch(neilroRequest);
+        crawlingManager.crawlNeilroTrain(neilroRequest);
         return ResponseEntity.ok().build();
     }
 }
