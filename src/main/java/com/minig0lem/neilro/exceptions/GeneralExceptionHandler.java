@@ -33,4 +33,9 @@ public class GeneralExceptionHandler {
         return new ResponseEntity<>(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Body 값 없음."), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(CrawlingException.class)
+    public ResponseEntity<ErrorResponse> handleCrawlingException(CrawlingException e) {
+        return new ResponseEntity<>(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
 }
