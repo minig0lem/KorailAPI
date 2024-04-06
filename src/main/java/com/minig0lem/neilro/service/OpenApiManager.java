@@ -31,7 +31,7 @@ public class OpenApiManager {
 
 
     public OpenApiResponse fetch(NeilroRequest neilroRequest) {
-        String url = makeRequestUrl(1, 500, neilroRequest.getDep()
+        String url = makeRequestUrl(neilroRequest.getPageNo(), 10, neilroRequest.getDep()
                                     , neilroRequest.getDepTime(), neilroRequest.getArr());
 
         List<OpenApiVo> voList = new ArrayList<>();
