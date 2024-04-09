@@ -31,8 +31,8 @@ public class OpenApiManager {
 
 
     public OpenApiResponse fetch(NeilroRequest neilroRequest) {
-        String url = makeRequestUrl(neilroRequest.getPageNo(), 10, neilroRequest.getDep()
-                                    , neilroRequest.getDepTime(), neilroRequest.getArr());
+        String url = makeRequestUrl(neilroRequest.getPageNo(), 150, neilroRequest.getDep()
+                                    , neilroRequest.getDepTime().substring(0,8), neilroRequest.getArr());
 
         List<OpenApiVo> voList = new ArrayList<>();
 
@@ -49,14 +49,18 @@ public class OpenApiManager {
             JSONObject jsonItems = (JSONObject) jsonBody.get("items");
             JSONArray jsonItemList = (JSONArray) jsonItems.get("item");
 
-            for (Object o : jsonItemList) {
-                JSONObject item = (JSONObject) o;
+            String depHour = neilroRequest.getDepTime().substring(8);
+
+            int idx = findFirstIndex(jsonItemList, depHour) * neilroRequest.getPageNo();
+
+            for (int i = 0; i < 10; i++) {
+                if(idx == jsonItemList.size()) break;
+                JSONObject item = (JSONObject) jsonItemList.get(idx++);
                 OpenApiVo vo = toVo(item);
                 voList.add(vo);
             }
 
             Long totalCount = (Long) jsonBody.get("totalCount");
-
             return OpenApiResponse.builder()
                     .totalCount(totalCount)
                     .voList(voList)
@@ -66,6 +70,18 @@ public class OpenApiManager {
             e.printStackTrace();
             throw new OpenApiException("Open API 호출 오류");
         }
+    }
+
+    private int findFirstIndex(JSONArray jsonItemList, String depHour) {
+        for(int i = 0; i < jsonItemList.size(); i++) {
+            JSONObject item = (JSONObject) jsonItemList.get(i);
+            String dep = String.valueOf(item.get("depplandtime")).substring(8, 10);
+            if(dep.compareTo(depHour) < 0) {
+                continue;
+            }
+            return i;
+        }
+        return 0;
     }
 
     private String makeRequestUrl(int pageNo, int numOfRows, String dep, String depTime, String arr) {
@@ -83,7 +99,7 @@ public class OpenApiManager {
     private OpenApiVo toVo(JSONObject item) {
         return OpenApiVo.builder()
                 .dep((String) item.get("depplacename"))
-                .depTime((Long) item.get("arrplandtime"))
+                .depTime((Long) item.get("depplandtime"))
                 .arr((String) item.get("arrplacename"))
                 .arrTime((Long) item.get("arrplandtime"))
                 .trainType((String) item.get("traingradename"))
