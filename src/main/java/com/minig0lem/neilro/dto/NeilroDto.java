@@ -27,7 +27,7 @@ public class NeilroDto {
         private String arr;
 
         @NotNull(message = "depTime must not be null")
-        @Pattern(regexp = "^\\d{8}$", message = "depTime must be in the format of YYYYMMDD")
+        @Pattern(regexp = "^\\d{10}$", message = "depTime must be in the format of YYYYMMDDHH")
         private String depTime;
 
         public NeilroRequest(int pageNo, int numOfRows, String dep, String arr, String depTime) {
