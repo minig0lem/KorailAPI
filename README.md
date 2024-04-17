@@ -1,2 +1,2 @@
 # NeilroAPI
-내일로 열차 조회 API
+코레일 열차 좌석 조회 API
