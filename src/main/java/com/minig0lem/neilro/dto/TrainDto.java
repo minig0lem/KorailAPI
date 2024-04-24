@@ -19,15 +19,12 @@ public class TrainDto {
         @NotNull(message = "depTime must not be null")
         @Pattern(regexp = "^\\d{10}$", message = "depTime must be in the format of YYYYMMDDHH")
         private String depTime;
-
     }
-
     @Builder
     @Getter
     public static class TrainListResponse {
         private List<TrainResponse> trainList;
     }
-
     @Builder
     @Getter
     public static class TrainResponse {
@@ -62,7 +59,6 @@ public class TrainDto {
         private List<Long> availableTrainNumList;
         private List<CrawlingDto> trainSeatsList;
     }
-
     @Builder
     @Getter
     public static class CrawlingDto {
