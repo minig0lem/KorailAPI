@@ -10,9 +10,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import static com.minig0lem.neilro.dto.NeilroDto.OpenApiResponse;
-import static com.minig0lem.neilro.dto.NeilroDto.NeilroRequest;
-import static com.minig0lem.neilro.dto.NeilroDto.OpenApiVo;
+import static com.minig0lem.neilro.dto.TrainDto.OpenApiResponse;
+import static com.minig0lem.neilro.dto.TrainDto.TrainRequest;
+import static com.minig0lem.neilro.dto.TrainDto.OpenApiDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,19 +29,17 @@ public class OpenApiManager {
     @Value("${openApi.dataType}")
     private String dataType;
 
+    public OpenApiResponse fetch(TrainRequest trainRequest) {
+        String url = makeRequestUrl(1, 150, trainRequest.getDep()
+                                    , trainRequest.getDepTime().substring(0,8), trainRequest.getArr());
 
-    public OpenApiResponse fetch(NeilroRequest neilroRequest) {
-        String url = makeRequestUrl(neilroRequest.getPageNo(), 150, neilroRequest.getDep()
-                                    , neilroRequest.getDepTime().substring(0,8), neilroRequest.getArr());
-
-        List<OpenApiVo> voList = new ArrayList<>();
+        List<OpenApiDto> dtoList = new ArrayList<>();
 
         try {
             RestTemplate restTemplate = new RestTemplate();
             JSONParser jsonParser = new JSONParser();
 
             String jsonString = restTemplate.getForObject(url, String.class);
-
             JSONObject jsonObject = (JSONObject) jsonParser.parse(jsonString);
 
             JSONObject jsonResponse = (JSONObject) jsonObject.get("response");
@@ -49,21 +47,19 @@ public class OpenApiManager {
             JSONObject jsonItems = (JSONObject) jsonBody.get("items");
             JSONArray jsonItemList = (JSONArray) jsonItems.get("item");
 
-            String depHour = neilroRequest.getDepTime().substring(8);
+            String depHour = trainRequest.getDepTime().substring(8);
 
-            int idx = findFirstIndex(jsonItemList, depHour) * neilroRequest.getPageNo();
+            int idx = findFirstIndex(jsonItemList, depHour);
 
             for (int i = 0; i < 10; i++) {
                 if(idx == jsonItemList.size()) break;
                 JSONObject item = (JSONObject) jsonItemList.get(idx++);
-                OpenApiVo vo = toVo(item);
-                voList.add(vo);
+                OpenApiDto dto = toDto(item);
+                dtoList.add(dto);
             }
 
-            Long totalCount = (Long) jsonBody.get("totalCount");
             return OpenApiResponse.builder()
-                    .totalCount(totalCount)
-                    .voList(voList)
+                    .dtoList(dtoList)
                     .build();
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -71,7 +67,6 @@ public class OpenApiManager {
             throw new OpenApiException("Open API 호출 오류");
         }
     }
-
     private int findFirstIndex(JSONArray jsonItemList, String depHour) {
         for(int i = 0; i < jsonItemList.size(); i++) {
             JSONObject item = (JSONObject) jsonItemList.get(i);
@@ -83,7 +78,6 @@ public class OpenApiManager {
         }
         return 0;
     }
-
     private String makeRequestUrl(int pageNo, int numOfRows, String dep, String depTime, String arr) {
         return callBackUrl
                 + "?serviceKey=" + serviceKey
@@ -94,10 +88,8 @@ public class OpenApiManager {
                 + "&arrPlaceId=" + StationCode.valueOf(arr).getCode()
                 + "&depPlandTime=" + depTime;
     }
-
-
-    private OpenApiVo toVo(JSONObject item) {
-        return OpenApiVo.builder()
+    private OpenApiDto toDto(JSONObject item) {
+        return OpenApiDto.builder()
                 .dep((String) item.get("depplacename"))
                 .depTime((Long) item.get("depplandtime"))
                 .arr((String) item.get("arrplacename"))
