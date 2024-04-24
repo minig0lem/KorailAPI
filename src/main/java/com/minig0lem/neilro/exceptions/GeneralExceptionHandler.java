@@ -35,6 +35,9 @@ public class GeneralExceptionHandler {
 
     @ExceptionHandler(CrawlingException.class)
     public ResponseEntity<ErrorResponse> handleCrawlingException(CrawlingException e) {
+        if(e.getMessage().contains("이전")) {
+            return new ResponseEntity<>(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "현재 일자보다 이전 일자를 선택하셨습니다."), HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
