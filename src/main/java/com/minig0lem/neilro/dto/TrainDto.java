@@ -9,6 +9,8 @@ import java.util.List;
 public class TrainDto {
     @Getter
     @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class TrainRequest {
         @NotNull(message = "dep must not be null")
         private String dep;
@@ -19,6 +21,7 @@ public class TrainDto {
         @NotNull(message = "depTime must not be null")
         @Pattern(regexp = "^\\d{10}$", message = "depTime must be in the format of YYYYMMDDHH")
         private String depTime;
+
     }
     @Builder
     @Getter
