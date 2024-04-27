@@ -78,6 +78,6 @@ public class TrainService {
     }
     private String convertDate(Long dateTime) {
         String date = String.valueOf(dateTime);
-        return date.substring(0,4) + "/" + date.substring(4,6) + "/" + date.substring(6,8) + "/ " + date.substring(8,10) + ":" + date.substring(10,12);
+        return date.substring(0,4) + "/" + date.substring(4,6) + "/" + date.substring(6,8) + " " + date.substring(8,10) + ":" + date.substring(10,12);
     }
 }
